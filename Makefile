@@ -63,6 +63,9 @@ all:
 console:
 	$(EMCC) source/console.cpp examples/console.cpp -o build/public_html/js/console.js
 
+console_debug:
+	$(EMCC) -DWJS_DEBUG source/console.cpp examples/console.cpp -o build/public_html/js/console.js
+
 dom:
 	$(EMCC) source/dom.cpp examples/dom.cpp -o build/public_html/js/dom.js
 
@@ -70,7 +73,7 @@ dom_debug:
 	$(EMCC) -DWJS_DEBUG source/console.cpp source/dom.cpp examples/dom.cpp -o build/public_html/js/dom.js
 
 indexed_db:
-	$(EMCC) source/indexed_db.cpp examples/indexed_db.cpp -o build/public_html/js/indexed_db.js
+	$(EMCC) source/console.cpp source/indexed_db.cpp examples/indexed_db.cpp -o build/public_html/js/indexed_db.js
 
 indexed_db_debug:
 	$(EMCC) -DWJS_DEBUG source/console.cpp source/indexed_db.cpp examples/indexed_db.cpp -o build/public_html/js/indexed_db.js

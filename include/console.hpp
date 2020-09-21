@@ -8,13 +8,23 @@ class console_c {
         const val js_object = val::global("console");
 
     public:
-        void log(const char * string);
-        void warn(const char * string);
-        void error(const char * string);
+        void clear();
+        void table(const val js_object);
+        void count(const char * label, ...);
+        void countReset(const char * label, ...);
 
-        void logf(const char * string, ...);
-        void warnf(const char * string, ...);
-        void errorf(const char * string, ...);
+        void log(const char * string, ...);
+        void info(const char * string, ...);
+        void warn(const char * string, ...);
+        void error(const char * string, ...);
+
+        void group(const char * label, ...);
+        void groupCollapsed(const char * label, ...);
+        void groupEnd();
+
+        void time(const char * label, ...);
+        void timeLog(const char * label, ...);
+        void timeEnd(const char * label, ...);
 };
 
 static console_c console;
