@@ -1,13 +1,13 @@
 #include <console.hpp>
-#include <string.h>
 #include <stdarg.h>
 
 #ifdef WJS_DEBUG
     #include <stdlib.h>
 #endif
 
+#include "vsnprintf.cpp"
+
 enum {
-    CONSOLE_STRING_BUFFER_SIZE = 512,
     CONSOLE_SPRINTF_BUFFER_SIZE = 512,
 };
 
@@ -19,36 +19,33 @@ void console_c::table(const val js_object) {
     this->js_object.call<void>("table", js_object);
 }
 
-void console_print(const val js_object, const char * type, const char * string, va_list arg_list) {
-    char string_buffer[CONSOLE_STRING_BUFFER_SIZE];
+void console_print(const val js_object, const char * type, const char * string, va_list & arg_list) {
     char sprintf_buffer[CONSOLE_SPRINTF_BUFFER_SIZE];
 
     std::vector<val> console_js_val;
     std::vector<std::string> console_strings;
 
-    strcpy(string_buffer, string);
-    char * str_buf_ptr = string_buffer;
+    do {
+        val * js_object;
+        console_sp::vsnprintf(sprintf_buffer, sizeof(sprintf_buffer), string, arg_list, &js_object, &string);
 
-    for (char * str_buf_ptr_tmp = string_buffer; (str_buf_ptr_tmp = strstr(str_buf_ptr_tmp, "%js")) != NULL; str_buf_ptr = str_buf_ptr_tmp += 3) {
-        str_buf_ptr_tmp[0] = 0;
-        vsnprintf(sprintf_buffer, sizeof(sprintf_buffer), str_buf_ptr, arg_list);
+        if (js_object != NULL) {
+            console_js_val.push_back(js_object[0]);
+        }
 
         console_strings.push_back(std::string(sprintf_buffer));
-        console_js_val.push_back(va_arg(arg_list, val *)[0]);
-    }
-
-    vsnprintf(sprintf_buffer, sizeof(sprintf_buffer), str_buf_ptr, arg_list);
+    } while(string != NULL);
 
     switch (console_js_val.size()) {
         case 0: {
-            js_object.call<void>(type, std::string(sprintf_buffer));
+            js_object.call<void>(type, console_strings[0]);
         } break;
         case 1: {
-            js_object.call<void>(type, console_strings[0], console_js_val[0], std::string(sprintf_buffer));
+            js_object.call<void>(type, console_strings[0], console_js_val[0], console_strings[1]);
         } break;
         case 2: {
             js_object.call<void>(type, console_strings[0], console_js_val[0],
-                console_strings[1], console_js_val[1], std::string(sprintf_buffer));
+                console_strings[1], console_js_val[1], console_strings[2]);
         } break;
         #ifdef WJS_DEBUG
             default: {
@@ -92,10 +89,10 @@ void console_c::error(const char * string, ...) {
     va_end(arg_list);
 }
 
-void console_call(const val js_object, const char * type, const char * label, va_list arg_list) {
+void console_call(const val js_object, const char * type, const char * label, va_list & arg_list) {
     char sprintf_buffer[CONSOLE_SPRINTF_BUFFER_SIZE];
 
-    vsnprintf(sprintf_buffer, sizeof(sprintf_buffer), label, arg_list);
+    console_sp::vsnprintf(sprintf_buffer, sizeof(sprintf_buffer), label, arg_list, (val **){}, (const char **){});
     js_object.call<void>(type, std::string(sprintf_buffer));
 }
 
