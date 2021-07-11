@@ -13,7 +13,7 @@ int main() {
     auto db_request = indexedDB.open(DATABASE_NAME, 1);
 
     db_request.onupgradeneeded(GET_FUNC_NAME_STR(idb_open_onupgradeneeded));
-    db_request.onsuccess(GET_FUNC_NAME_STR(idb_open_succsess));
+    db_request.onsuccess(GET_FUNC_NAME_STR(idb_open_success));
 
     #ifdef WJS_DEBUG
         db_request.onerror(GET_FUNC_NAME_STR(idb_error));
@@ -30,7 +30,7 @@ void idb_open_onupgradeneeded(val event) {
     main();
 }
 
-void idb_open_succsess(val event) {
+void idb_open_success(val event) {
     db_instance = db_instance.get_result(event);
     auto transaction = db_instance.transaction({TABLE1_NAME, TABLE2_NAME}, TRANSACTION_READWRITE);
 
@@ -44,7 +44,7 @@ void idb_open_succsess(val event) {
     auto db_request = table1_store.add(js_object);
 
     #ifdef WJS_DEBUG
-        db_request.onsuccess(GET_FUNC_NAME_STR(idb_add_succsess));
+        db_request.onsuccess(GET_FUNC_NAME_STR(idb_add_success));
         db_request.onerror(GET_FUNC_NAME_STR(idb_error));
     #endif
 }
@@ -52,7 +52,7 @@ void idb_open_succsess(val event) {
 #ifdef WJS_DEBUG
     #include <console.hpp>
 
-    void idb_add_succsess(val event) {
+    void idb_add_success(val event) {
         console.info("IndexedDB Example: The object was successfully added %js", &event);
     }
 
@@ -63,8 +63,8 @@ void idb_open_succsess(val event) {
 
 EMSCRIPTEN_BINDINGS() {
     function(GET_FUNC_NAME_STR(idb_open_onupgradeneeded), &idb_open_onupgradeneeded);
-    function(GET_FUNC_NAME_STR(idb_open_succsess), &idb_open_succsess);
-    function(GET_FUNC_NAME_STR(idb_add_succsess), &idb_add_succsess);
+    function(GET_FUNC_NAME_STR(idb_open_success), &idb_open_success);
+    function(GET_FUNC_NAME_STR(idb_add_success), &idb_add_success);
 
     #ifdef WJS_DEBUG
         function(GET_FUNC_NAME_STR(idb_error), &idb_error);
