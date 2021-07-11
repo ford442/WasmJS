@@ -21,10 +21,10 @@ dom_object_c common_query_selector(val * js_object, const char * selector_string
             .js_object = js_object->call<val>("querySelector", std::string(selector_string)),
         };
 
-        console.logf("DOM: Geting element by selector '%s' ...", selector_string);
+        console.log("DOM: Geting element by selector '%s' ...", selector_string);
 
         if (dom_object.js_object.isUndefined()) {
-            console.errorf("DOM: Can`t get element by selector '%s'", selector_string);
+            console.error("DOM: Can`t get element by selector '%s'", selector_string);
             exit(0);
         }
 
@@ -38,10 +38,10 @@ std::vector<dom_object_c> common_query_selector_all(val * js_object, const char 
     #ifdef WJS_DEBUG
         val dom_objects_array = js_object->call<val>("querySelectorAll", std::string(selector_string));
 
-        console.logf("DOM: Geting elements by selector '%s' ...", selector_string);
+        console.log("DOM: Geting elements by selector '%s' ...", selector_string);
 
         if (dom_objects_array.isUndefined()) {
-            console.errorf("DOM: Can`t get elements by selector '%s'", selector_string);
+            console.error("DOM: Can`t get elements by selector '%s'", selector_string);
             exit(0);
         }
 
@@ -63,7 +63,7 @@ std::vector<dom_object_c> common_query_selector_all(val * js_object, const char 
 
 void dom_object_c::innerHTML(const char * string) {
     #ifdef WJS_DEBUG
-        console.logf("DOM: Setting element innerHTML: '%s' ...", string);
+        console.log("DOM: Setting element innerHTML: '%s' ...", string);
         this->js_object.set("innerHTML", std::string(string));
     #else
         this->js_object.set("innerHTML", std::string(string));
@@ -83,7 +83,7 @@ void dom_object_c::innerHTMLf(const char * string, ...) {
 
 void dom_object_c::className(const char * class_string) {
     #ifdef WJS_DEBUG
-        console.logf("DOM: Setting element className: '%s' ...", class_string);
+        console.log("DOM: Setting element className: '%s' ...", class_string);
         this->js_object.set("className", std::string(class_string));
     #else
         this->js_object.set("className", std::string(class_string));
